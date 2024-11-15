@@ -1,5 +1,14 @@
 // power.c
-#include "../include/power.h"
+
+/*
+    TODO
+    이 파일은 일단 chatGPT가 리눅스 /proc/stat에서 CPU 사용률을 가져와 이를 토대로 전력사용량을 추정하는
+    알고리즘을 만들어 준 건데...
+    솔직히 이거 전력 소모량 제대로 계산 해주는게 아닌 것 같음
+
+    애초에 CPU 사용량 만으로 전력 소모량을 알아낼 수가 있나?? 면밀히 검토하고 알고리즘 수정할 것
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +57,7 @@ double calculate_power(double cpu_usage) {
 }
 
 // 전력 소모량 출력 함수
-void show_power_consumption() {
+void show_power_consumption(void) {
     static long prev_idle = 0;
     static long prev_total = 0;
     double cpu_usage = 0.0;

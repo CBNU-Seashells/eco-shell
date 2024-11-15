@@ -17,47 +17,18 @@
 
 eco-shell/<br>
 ├── src/<br>
-│   ├── eco_shell.c<br>
+│   ├── main.c<br>
+│   ├── run_shell.c<br>
 │   ├── command.c<br>
-│   ├── process.c<br>
+│   ├── run_process.c<br>
+│   ├── fclean.c<br>
+│   ├── pclean.c<br>
 │   ├── power.c<br>
-│   └── cleanup.c<br>
-├── include/<br>
-│   ├── eco_shell.h<br>
-│   ├── command.h<br>
-│   ├── process.h<br>
-│   ├── power.h<br>
-│   └── cleanup.h<br>
+│   └── ecomode.c<br>
 ├── Makefile<br>
 └── README.md<br>
 
-<h3>3. 파일 및 디렉토리 역할</h3>
-
-<h4>1) eco-shell: 프로젝트 명. 최상위 디렉토리</h4>
-
-<h4>2) src: 소스 코드 디렉토리</h4>
-    <ul>
-        <li><b>eco_shell.c:</b> 메인 실행 파일</li>
-        <li><b>command.c:</b> 명령어 처리 함수</li>
-        <li><b>process.c:</b> 프로세스 관리 함수</li>
-        <li><b>power.c:</b> 전력 소모량 계산 함수</li>
-        <li><b>cleanup.c:</b> 불필요한 파일/프로세스 정리 함수</li>
-    </ul>
-
-<h4>3) include: 헤더 파일 디렉토리</h4>
-    <ul>
-        <li><b>eco_shell.h:</b> 메인 헤더 파일(전체 헤더 파일 포함)</li>
-        <li><b>command.h:</b> 명령어 처리 관련 헤더 파일</li>
-        <li><b>process.h:</b> 프로세스 관리 관련 헤더 파일</li>
-        <li><b>power.h:</b> 전력 소모량 계산 관련 헤더 파일</li>
-        <li><b>cleanup.h:</b> 정리 기능 관련 헤더 파일</li>
-    </ul>
-
-<h4>4) Makefile: 빌드 관리 파일</h4>
-
-<h4>5) README.md: 프로젝트 설명 파일</h4>
-
-<h3>4. 빌드 및 사용법</h3>
+<h3>3. 빌드 및 사용법</h3>
 <ol>
 <li>빌드</li>
 
@@ -79,9 +50,12 @@ $ exit
 ```
 </ol>
 
-<h3>5. 메모</h3>
-<p>2024/11/14 빌드 요약 - Sa Jaeheon<p>
+<h3>4. 메모</h3>
+<p><b>2024/11/15 빌드 요약 - Sa Jaeheon</b></p>
+<p>각 소스파일마다 해야할 것이랑 테스트 결과 주석으로 표시함.<br>헤더파일은 필요없을 것 같아서 삭제함.</p>
 <hr>
+
+<p><b>2024/11/14 빌드 요약 - Sa Jaeheon</b></p>
 
 <h4>1. 테스트 결과</h4>
 <ol>

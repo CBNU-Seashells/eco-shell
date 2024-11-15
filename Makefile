@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude
-SRC = src/eco_shell.c src/command.c src/process.c src/power.c src/cleanup.c
+SRC = src/main.c src/run_shell.c src/command.c src/run_process.c src/power.c src/fclean.c src/pclean.c src/ecomode.c
 OBJ = $(SRC:.c=.o)
 TARGET = eco-shell
 
