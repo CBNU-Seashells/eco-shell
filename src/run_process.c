@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -25,6 +26,12 @@ int runProcess(char *args[])
     // 자식 프로세스
     else if (pid == 0)
     {
+        // 명령어가 cd인 경우 자식 프로세스가 아닌 부모 프로세스에서 cd를 처리하도록 함
+        if (strcmp(args[0], "cd") == 0)
+        {
+            exit(EXIT_SUCCESS);
+        }
+
         if (execvp(args[0], args) == -1)
         {
             perror("Process execution fail");
@@ -35,6 +42,13 @@ int runProcess(char *args[])
     else
     {
         wait(NULL);
+        if (strcmp(args[0], "cd") == 0)
+        {
+            if (chdir(args[1]) != 0)
+            {
+                perror("Process execution fail");
+            }
+        }
     }
 
     return 0;

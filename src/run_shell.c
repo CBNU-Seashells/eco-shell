@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define STDIN_BUFFER 1000
 
@@ -16,10 +17,12 @@ int executeCommand(char *);
 void runShell(void)
 {
     char input[STDIN_BUFFER];
+    char *cwd = NULL;
 
     while (1)
     {
-        printf("eco-shell> ");
+        cwd = getcwd(cwd, BUFSIZ);
+        printf("eco-shell> %s$ ", cwd);
         if (fgets(input, STDIN_BUFFER, stdin) == NULL)
         {
             break;
@@ -40,5 +43,7 @@ void runShell(void)
         {
             fprintf(stderr, "Cannot execute the command. Try again\n");
         }
+
+        free(cwd);
     }
 }
