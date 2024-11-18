@@ -11,14 +11,17 @@
 
 #define STDIN_BUFFER 1000
 
-int execute_command(char*);
+int executeCommand(char *);
 
-void run_shell(void) {
+void runShell(void)
+{
     char input[STDIN_BUFFER];
 
-    while (1) {
+    while (1)
+    {
         printf("eco-shell> ");
-        if (fgets(input, STDIN_BUFFER, stdin) == NULL){
+        if (fgets(input, STDIN_BUFFER, stdin) == NULL)
+        {
             break;
         }
 
@@ -26,13 +29,15 @@ void run_shell(void) {
         input[strcspn(input, "\n")] = '\0';
 
         // exit 명령어 처리
-        if (strcmp(input, "exit") == 0) {
+        if (strcmp(input, "exit") == 0)
+        {
             printf("Exiting eco-shell...\n");
             break;
         }
 
         // 명령어 실행
-        if (execute_command(input) == EXIT_FAILURE) {
+        if (executeCommand(input) == EXIT_FAILURE)
+        {
             fprintf(stderr, "Cannot execute the command. Try again\n");
         }
     }
