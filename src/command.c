@@ -12,7 +12,7 @@
 #define ARGS_BUFFER 50
 
 void show_power_consumption(void);
-void cleanup_files(void);
+void cleanup_files(char* []);
 void cleanup_process(void);
 void ecomode(void);
 int run_process(char* []);
@@ -43,7 +43,7 @@ int execute_command(char* input) {
     else if (strcmp(args[0], "fclean") == 0) {
         // 불필요한 파일 정리 명령 - fclean
         // 추후 옵션 인자 처리를 위해 주석으로 args를 넣었음
-        cleanup_files(/*args*/);
+        cleanup_files(args);
 
         return 0;
     }

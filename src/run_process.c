@@ -12,7 +12,7 @@
 #include <sys/wait.h>
 
 // 일반 쉘 명령어 실행 함수
-int run_process(char *args[]) {
+int run_process(char* args[]) {
     pid_t pid = fork();
 
     // 포크 실패
@@ -26,7 +26,7 @@ int run_process(char *args[]) {
             perror("Process execution fail");
             exit(EXIT_FAILURE);
         }
-    } 
+    }
     // 부모 프로세스
     else {
         wait(NULL);
