@@ -45,7 +45,6 @@ int executeCommand(char *input)
     else if (strcmp(args[0], "fclean") == 0)
     {
         // 불필요한 파일 정리 명령 - fclean
-        // 추후 옵션 인자 처리를 위해 주석으로 args를 넣었음
         cleanupFiles(args);
 
         return 0;
