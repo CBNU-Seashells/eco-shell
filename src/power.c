@@ -73,7 +73,7 @@ void showPowerConsumption(void)
     getCpuUsage(&prev_idle, &prev_total, &cpu_usage);
 
     // 전력 소모량 계산
-    double power_consumption = calculate_power(cpu_usage);
+    double power_consumption = calculatePower(cpu_usage);
 
     // 결과 출력
     printf("현재 CPU 사용률: %.2f%%\n", cpu_usage);
