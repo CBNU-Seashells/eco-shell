@@ -12,7 +12,7 @@
 #define ARGS_BUFFER 50
 
 void showPowerConsumption(void);
-void cleanupFiles(void);
+void cleanupFiles(char* []);
 void cleanupProcess(void);
 void ecoMode(void);
 int runProcess(char *[]);
@@ -46,7 +46,7 @@ int executeCommand(char *input)
     {
         // 불필요한 파일 정리 명령 - fclean
         // 추후 옵션 인자 처리를 위해 주석으로 args를 넣었음
-        cleanupFiles(/*args*/);
+        cleanupFiles(args);
 
         return 0;
     }

@@ -31,6 +31,12 @@ void runShell(void)
         // 개행 문자 제거
         input[strcspn(input, "\n")] = '\0';
 
+        // 입력이 빈 문자열인 경우 무시하고 다음 루프로 넘어감
+        if (strlen(input) == 0)
+        {
+            continue;
+        }
+
         // exit 명령어 처리
         if (strcmp(input, "exit") == 0)
         {
