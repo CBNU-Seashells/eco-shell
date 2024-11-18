@@ -51,21 +51,25 @@ void cleanup_tmp_files(){
     const char* temp_dir = "/tmp/";
     struct dirent* entry;
 
-    DIR* dir = opendir(temp_dir);
+    DIR *dir = opendir(temp_dir);
 
-    if (dir == NULL) {
+    if (dir == NULL)
+    {
         perror("Failed to open /tmp/");
         exit(EXIT_FAILURE);
     }
 
-    while ((entry = readdir(dir)) != NULL) {
+    while ((entry = readdir(dir)) != NULL)
+    {
         char filepath[FILEPATH_BUFFER];
 
         snprintf(filepath, sizeof(filepath) - 1, "%s%s", temp_dir, entry->d_name);
-        if(remove(filepath) ==0){
+        if (remove(filepath) == 0)
+        {
             printf("Temporary files cleaned up.\n");
         }
-        else{
+        else
+        {
             fprintf(stderr, "Failed to cleanup temporary files\n");
             exit(EXIT_FAILURE);
         }

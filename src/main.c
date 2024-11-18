@@ -8,11 +8,12 @@
 
 #include <stdio.h>
 
-void run_shell(void);
+void runShell(void);
 
-int main(void) {
+int main(void)
+{
     printf("Welcome to Eco-Shell!\n");
-    run_shell();
+    runShell();
 
     return 0;
 }
