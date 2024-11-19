@@ -12,6 +12,16 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#define HOME_DIRECTORY_BUFFER 30
+
+// 현재 작업 디렉터리
+char *cwd = NULL;
+
+// run_shell.c에서 선언한 home_dir
+extern char *home_dir;
+
+int i = 0;
+
 // 일반 쉘 명령어 실행 함수
 int runProcess(char *args[])
 {
@@ -42,11 +52,31 @@ int runProcess(char *args[])
     else
     {
         wait(NULL);
+
         if (strcmp(args[0], "cd") == 0)
         {
-            if (chdir(args[1]) != 0)
+            // 커맨드라인에 "cd"를 입력할 경우
+            if (args[1] == NULL)
             {
-                perror("Process execution fail");
+                if (chdir(home_dir) != 0)
+                {
+                    perror("Process execution fail");
+                }
+            }
+            // 커맨드라인에 "cd ~"를 입력할 경우
+            else if (strcmp(args[1], "~") == 0)
+            {
+                if (chdir(home_dir) != 0)
+                {
+                    perror("Process execution fail");
+                }
+            }
+            else
+            {
+                if (chdir(args[1]) != 0)
+                {
+                    perror("Process execution fail");
+                }
             }
         }
     }
