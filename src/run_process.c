@@ -1,10 +1,5 @@
 // run_process.c
 
-/*
-    TODO
-    다른 명령어는 잘 작동하나 cd 명령어가 작동하지 않는 버그 발견. 해결하기
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

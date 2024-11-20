@@ -1,10 +1,5 @@
 // run_shell.c
 
-/*
-    TODO
-    eco-shell에서 아무것도 입력하지 않고 엔터키를 누르면 segmentaion fault 발생하는 버그 수정
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +17,7 @@ void runShell(void)
     while (1)
     {
         cwd = getcwd(cwd, BUFSIZ);
-        printf("eco-shell> %s$ ", cwd);
+        printf("eco-shell:%s$ ", cwd);
         if (fgets(input, STDIN_BUFFER, stdin) == NULL)
         {
             break;

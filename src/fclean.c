@@ -12,7 +12,9 @@ void cleanupTmpFiles(){
     const char* temp_dir = "/tmp/";
     struct dirent* entry;
     char filepath[FILEPATH_BUFFER];
-    
+
+    int count_file_deleted = 0; // 삭제된 파일이 하나라도 있으면 1+, 없으면 0
+
     // /tmp/ 디렉토리를 엽니다.
     DIR* dir = opendir(temp_dir);
     if (dir == NULL) {
@@ -38,14 +40,22 @@ void cleanupTmpFiles(){
         int result = system(command);
         if (result == 0) {
             printf("Deleted: %s\n", filepath);
-        } else {
+            count_file_deleted++;
+        } 
+        else {
             fprintf(stderr, "Failed to delete: %s\n", filepath);
         }
     }
 
     // 디렉토리 닫기
     closedir(dir);
-    printf("Temporary files cleanup completed with sudo.\n");
+
+    if(count_file_deleted == 0){
+        printf("Nothing to delete temporary files\n");
+    }
+    else if(count_file_deleted > 0){
+        printf("Temporary files cleanup completed with sudo.\n");
+    }
 }
 
 void cleanupLogFiles(){
@@ -53,6 +63,8 @@ void cleanupLogFiles(){
     struct dirent* entry;
     char filepath[FILEPATH_BUFFER];
     
+    int count_file_deleted = 0; // 삭제된 파일이 하나라도 있으면 1+, 없으면 0
+
     // /tmp/ 디렉토리를 엽니다.
     DIR* dir = opendir(temp_dir);
     if (dir == NULL) {
@@ -78,20 +90,30 @@ void cleanupLogFiles(){
         int result = system(command);
         if (result == 0) {
             printf("Deleted: %s\n", filepath);
-        } else {
+            count_file_deleted++;
+        } 
+        else {
             fprintf(stderr, "Failed to delete: %s\n", filepath);
         }
     }
 
     // 디렉토리 닫기
     closedir(dir);
-    printf("Log files cleanup completed with sudo.\n");
+
+    if(count_file_deleted == 0){
+        printf("Nothing to delete log files\n");
+    }
+    else if(count_file_deleted > 0){
+        printf("Log files cleanup completed with sudo.\n");
+    }
 }
 
 void cleanupCacheFiles(){
     const char* temp_dir = "/var/cache/";
     struct dirent* entry;
     char filepath[FILEPATH_BUFFER];
+
+    int count_file_deleted = 0; // 삭제된 파일이 하나라도 있으면 1+, 없으면 0
     
     // /tmp/ 디렉토리를 엽니다.
     DIR* dir = opendir(temp_dir);
@@ -118,14 +140,22 @@ void cleanupCacheFiles(){
         int result = system(command);
         if (result == 0) {
             printf("Deleted: %s\n", filepath);
-        } else {
+            count_file_deleted++;
+        } 
+        else {
             fprintf(stderr, "Failed to delete: %s\n", filepath);
         }
     }
 
     // 디렉토리 닫기
     closedir(dir);
-    printf("Cache files cleanup completed with sudo.\n");
+
+    if(count_file_deleted == 0){
+        printf("Nothing to delete cache files\n");
+    }
+    else if(count_file_deleted > 0){
+        printf("Cache files cleanup completed with sudo.\n");
+    }
 }
 
 void cleanupAllFiles(){
