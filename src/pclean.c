@@ -11,11 +11,11 @@
 #include <signal.h>
 
 #define INACTIVE_LIMIT 3600 // 1시간
-#define STAT_PATH 1000
+#define PATH_BUF 1000
 
 // 프로세스가 백그라운드 상태인지 확인하는 함수
 int isBackgroundProcess(pid_t pid) {
-    char stat_path[STAT_PATH];
+    char stat_path[PATH_BUF];
     FILE *stat_file;
     char state;
 
@@ -39,7 +39,7 @@ void cleanupProcess(void) {
     // 현재 시간
     time_t currentTime = time(NULL);
 
-    char path[256];
+    char path[PATH_BUF];
     struct stat statBuf;
     int count_process_terminated = 0; // 삭제된 프로세스가 하나라도 있음: 1+, 하나도 없음: 0
 
