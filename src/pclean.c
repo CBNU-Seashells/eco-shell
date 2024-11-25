@@ -1,5 +1,11 @@
 // pclean.c
 
+/*
+    TODO
+    종료해서는 안되는 프로세스까지 모두 종료시키는 문제 발생
+    예를 들면 init 프로세스라든가
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -59,8 +65,6 @@ void cleanupProcess(void) {
 
             // 오래된 백그라운드 프로세스 종료
             if (elapsedTime >= INACTIVE_LIMIT && isBackgroundProcess(pid)) {
-                printf("Terminating inactive process with sudo: PID=%d, Elapsed time=%.0f seconds\n", pid, elapsedTime);
-
                 // sudo를 사용해 프로세스 종료
                 char command[256];
                 snprintf(command, sizeof(command), "sudo kill -9 %d", pid);
@@ -68,6 +72,7 @@ void cleanupProcess(void) {
                 int result = system(command);
 
                 if (result == 0) {
+                    printf("Terminating inactive process with sudo: PID=%d, Elapsed time=%.0f seconds\n", pid, elapsedTime);
                     printf("Process PID=%d terminated with sudo.\n", pid);
                     count_process_terminated++;
                 } 
