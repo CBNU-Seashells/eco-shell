@@ -15,4 +15,7 @@ $(TARGET): $(OBJ)
 clean:
 	rm -f $(OBJ) $(TARGET)
 
-.PHONY: all clean
+# power: 
+# 	@sudo apt install powertop
+
+.PHONY: all clean # power

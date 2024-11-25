@@ -39,11 +39,11 @@ void cleanupTmpFiles(){
         // 시스템 호출로 파일 삭제
         int result = system(command);
         if (result == 0) {
-            printf("Deleted: %s\n", filepath);
+            printf("관리자 권한으로 제거됨: %s\n", filepath);
             count_file_deleted++;
         } 
         else {
-            fprintf(stderr, "Failed to delete: %s\n", filepath);
+            fprintf(stderr, "오류. 파일 제거 실패.: %s\n", filepath);
         }
     }
 
@@ -51,10 +51,10 @@ void cleanupTmpFiles(){
     closedir(dir);
 
     if(count_file_deleted == 0){
-        printf("Nothing to delete temporary files\n");
+        printf("정리할 임시 파일이 없음.\n");
     }
     else if(count_file_deleted > 0){
-        printf("Temporary files cleanup completed with sudo.\n");
+        printf("모든 임시 파일 정리됨.\n");
     }
 }
 
@@ -89,11 +89,11 @@ void cleanupLogFiles(){
         // 시스템 호출로 파일 삭제
         int result = system(command);
         if (result == 0) {
-            printf("Deleted: %s\n", filepath);
+            printf("관리자 권한으로 제거됨.: %s\n", filepath);
             count_file_deleted++;
         } 
         else {
-            fprintf(stderr, "Failed to delete: %s\n", filepath);
+            fprintf(stderr, "오류. 파일 제거 실패.: %s\n", filepath);
         }
     }
 
@@ -101,10 +101,10 @@ void cleanupLogFiles(){
     closedir(dir);
 
     if(count_file_deleted == 0){
-        printf("Nothing to delete log files\n");
+        printf("정리할 로그 파일이 없음.\n");
     }
     else if(count_file_deleted > 0){
-        printf("Log files cleanup completed with sudo.\n");
+        printf("모든 로그 파일 정리됨.\n");
     }
 }
 
@@ -139,11 +139,11 @@ void cleanupCacheFiles(){
         // 시스템 호출로 파일 삭제
         int result = system(command);
         if (result == 0) {
-            printf("Deleted: %s\n", filepath);
+            printf("관리자 권한으로 제거됨.: %s\n", filepath);
             count_file_deleted++;
         } 
         else {
-            fprintf(stderr, "Failed to delete: %s\n", filepath);
+            fprintf(stderr, "오류. 파일 제거 실패.: %s\n", filepath);
         }
     }
 
@@ -151,10 +151,10 @@ void cleanupCacheFiles(){
     closedir(dir);
 
     if(count_file_deleted == 0){
-        printf("Nothing to delete cache files\n");
+        printf("정리할 캐시 파일이 없음.\n");
     }
     else if(count_file_deleted > 0){
-        printf("Cache files cleanup completed with sudo.\n");
+        printf("모든 캐시 파일 정리됨.\n");
     }
 }
 
@@ -170,12 +170,12 @@ void cleanupAllFiles(){
 }
 
 void cleanupHelp(void){
-    printf("fclean: delete useless files to clear disk space.\n");
-    printf("Usage: fclean <option>\n");
-    printf("  -t: clear temporary files\n");
-    printf("  -l: clear log files\n");
-    printf("  -c: clear cache files\n");
-    printf("  -a: clear all files above\n");
+    printf("fclean: 불필요한 파일을 정리하여 디스크 공간을 최적화합니다.\n");
+    printf("사용법: fclean <옵션>\n");
+    printf("  -t: 임시 파일 정리\n");
+    printf("  -l: 로그 파일 정리\n");
+    printf("  -c: 캐시 파일 정리\n");
+    printf("  -a: 임시, 로그, 캐시 파일 모두 정리\n");
 }
 
 void cleanupFiles(char* cleanup_args[]) {
@@ -200,7 +200,7 @@ void cleanupFiles(char* cleanup_args[]) {
         cleanupHelp();
     }
     else{
-        fprintf(stderr, "%s: Not a valid option for fclean\n", cleanup_args[1]);
+        fprintf(stderr, "%s: 이런 옵션은 없습니다.\n", cleanup_args[1]);
         cleanupHelp();
     }
 }

@@ -72,12 +72,12 @@ void cleanupProcess(void) {
                 int result = system(command);
 
                 if (result == 0) {
-                    printf("Terminating inactive process with sudo: PID=%d, Elapsed time=%.0f seconds\n", pid, elapsedTime);
-                    printf("Process PID=%d terminated with sudo.\n", pid);
+                    printf("관리자 권한으로 프로세스 종료중: PID = %d, 경과시간 = %.0f 초\n", pid, elapsedTime);
+                    printf("프로세스 PID = %d 종료됨.\n", pid);
                     count_process_terminated++;
                 } 
                 else {
-                    fprintf(stderr, "Failed to terminate process PID=%d\n", pid);
+                    fprintf(stderr, "오류. 프로세스를 종료할 수 없음. PID = %d\n", pid);
                 }
             }
         }
@@ -86,9 +86,9 @@ void cleanupProcess(void) {
     closedir(procDir);
 
     if(count_process_terminated == 0){
-        printf("Nothing to terminate\n");
+        printf("종료할 프로세스가 없음.\n");
     }
     else if(count_process_terminated > 0){
-        printf("Cleanup of inactive background processes completed with sudo.\n");
+        printf("장시간 동작이 없는 모든 프로세스 종료됨.\n");
     }
 }
