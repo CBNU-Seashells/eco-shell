@@ -9,31 +9,45 @@
 #define STDIN_BUFFER 1000
 #define HOME_DIRECTORY_BUFFER 30
 
-struct passwd *pw;
+// struct passwd *pw;
 
-// 홈 디렉터리 (e.g. /home/user1)
+// 현재 작업 디렉터리(절대 경로)
+char *cwd = NULL;
+
+// '~'을 포함한 현재 작업 디렉터리('~' == 홈 디렉터리)
+char cwd_tilde[BUFSIZ];
+
+/*
+    홈 디렉터리 (e.g. /home/user1)
+    최초 1회 홈 디렉터리 정보를 받아서 home_dir에 저장한다.
+*/
 char *home_dir;
 
 int executeCommand(char *);
 
+/*
+    eco-shell을 작동시킨다.
+
+    최초 1회 홈 디렉터리 정보를 받아 home_dir에 저장하고
+    이후엔 while 무한 루프를 통해 명령행에 명령어를 계속 입력받고
+    명령행에 "exit"을 입력하면 무한 루프를 빠져나와 eco-shell을 정상 종료한다.
+*/
 void runShell(void)
 {
+    // 명령행에서 입력받은 문자열을 저장할 버퍼
     char input[STDIN_BUFFER];
 
-    // 현재 작업 디렉터리(절대 경로)
-    char *cwd = NULL;
+    // pw = getpwuid(getuid());
 
-    // '~'을 포함한 현재 작업 디렉터리('~' == 홈 디렉터리)
-    char cwd_tilde[BUFSIZ];
-
-    pw = getpwuid(getuid());
-
-    // 문자열 저장 버퍼
+    // 임시 문자열 저장 버퍼
     char temp[BUFSIZ];
+
     int i = 0;
     int j = 0;
 
-    home_dir = pw->pw_dir;
+    home_dir = getenv("HOME");
+
+    // setenv("PATH", , 1);
 
     while (1)
     {
@@ -54,7 +68,7 @@ void runShell(void)
             strcat(cwd_tilde, temp);
             cwd_tilde[strlen(cwd_tilde)] = '\0';
 
-            printf("eco-shell:%s$ ", cwd_tilde);
+            printf("\033[1;32meco-shell\033[0m:\033[1;34m%s\033[0m$ ", cwd_tilde);
         }
         /*
             cwd에 home_dir이 포함되어 있지 않고 cwd != home_dir일 경우
@@ -62,9 +76,10 @@ void runShell(void)
         */
         else
         {
-            printf("eco-shell:%s$ ", cwd);
+            printf("\033[1;32meco-shell\033[0m:\033[1;34m%s\033[0m$ ", cwd);
         }
 
+        // 명령행에서 입력을 받을 때 에러 발생 시 eco-shell 종료
         if (fgets(input, STDIN_BUFFER, stdin) == NULL)
         {
             break;

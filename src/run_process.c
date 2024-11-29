@@ -10,19 +10,22 @@
 #define HOME_DIRECTORY_BUFFER 30
 
 // 현재 작업 디렉터리
-char *cwd = NULL;
+extern char *cwd;
 
-// run_shell.c에서 선언한 home_dir
+/*
+    run_shell.c에서 선언한 home_dir
+    └ 홈 디렉터리 (e.g. /home/user1)
+*/
 extern char *home_dir;
 
 int i = 0;
 
-// 일반 쉘 명령어 실행 함수
+// 명령어 처리를 마치고 일반 쉘 명령어를 실행한다.
 int runProcess(char *args[])
 {
     pid_t pid = fork();
 
-    // 포크 실패
+    // fork 실패
     if (pid < 0)
     {
         perror("Fork fail");
@@ -37,6 +40,7 @@ int runProcess(char *args[])
             exit(EXIT_SUCCESS);
         }
 
+        // pwd, ls 등 일반적인 명령어 처리
         if (execvp(args[0], args) == -1)
         {
             perror("Process execution fail");
