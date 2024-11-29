@@ -43,7 +43,7 @@ int runProcess(char *args[])
         // pwd, ls 등 일반적인 명령어 처리
         if (execvp(args[0], args) == -1)
         {
-            perror("Process execution fail");
+            perror(args[0]);
             exit(EXIT_FAILURE);
         }
     }
@@ -59,7 +59,7 @@ int runProcess(char *args[])
             {
                 if (chdir(home_dir) != 0)
                 {
-                    perror("Process execution fail");
+                    perror(args[1]);
                 }
             }
             // 커맨드라인에 "cd ~"를 입력할 경우
@@ -67,14 +67,14 @@ int runProcess(char *args[])
             {
                 if (chdir(home_dir) != 0)
                 {
-                    perror("Process execution fail");
+                    perror("cd");
                 }
             }
             else
             {
                 if (chdir(args[1]) != 0)
                 {
-                    perror("Process execution fail");
+                    perror("cd");
                 }
             }
         }

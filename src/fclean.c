@@ -200,7 +200,6 @@ void cleanupFiles(char* cleanup_args[]) {
         cleanupHelp();
     }
     else{
-        fprintf(stderr, "%s: 이런 옵션은 없습니다.\n", cleanup_args[1]);
-        cleanupHelp();
+        fprintf(stderr, "%s: 이런 옵션은 없습니다.\n'fclean -h'를 입력하여 사용법을 확인하세요.\n", cleanup_args[1]);
     }
 }
