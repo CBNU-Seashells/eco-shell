@@ -1,5 +1,4 @@
 # src/main.c src/run_shell.c src/execute_command.c src/run_process.c src/power.c src/fclean.c src/pclean.c src/ecomode.c
-# 형 이거 src/*.c 이렇게 하면 안됨. *을 정규 표현식이 아니라 문자로 인식해.
 
 CC = gcc
 CFLAGS = -Wall -Iinclude

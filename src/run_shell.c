@@ -93,14 +93,18 @@ void runShell(void)
         // exit 명령어 처리
         if (strcmp(input, "exit") == 0)
         {
-            printf("Exiting eco-shell...\n");
+            printf("에코쉘을 종료합니다. 다음에 또 봐요!\n");
             break;
         }
 
         // 명령어 실행
         if (executeCommand(input) == EXIT_FAILURE)
         {
-            fprintf(stderr, "Cannot execute the command. Try again\n");
+            // 다른 함수에서 명령어를 입력했을 때 실행에 실패하면 EXIT_FAILURE를 반환하도록 함.
+            // 그래서 executeCommand 함수의 반환값이 EXIT_FAILURE면 아래 문장이 출력되는 것을 기대했는데,
+            // 그냥 일반적인 bash 쉘에서 나오는 오류문이 출력된다.
+            // 이유는 모르겠다...
+            fprintf(stderr, "명령어를 실행할 수 없습니다. 다시 시도하세요.\n");
         }
 
         free(cwd);

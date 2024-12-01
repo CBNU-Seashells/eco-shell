@@ -7,7 +7,7 @@ void showPowerConsumption(void);
 
 int main(void)
 {
-    printf("Welcome to Eco-Shell!\n");
+    printf("환경 친화 리눅스 쉘 - 에코쉘\n");
 
     // .eco-shell_power_report 파일 초기화를 위한 삭제
     remove(".eco-shell_power_report");
