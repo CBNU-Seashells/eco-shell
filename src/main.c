@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void runShell(void);
-void showPowerConsumption(void);
+void calculatePowerConsumption(void);
 
 int main(void)
 {
@@ -13,7 +13,7 @@ int main(void)
     remove(".eco-shell_power_report");
 
     // 전력 소모량 초기 기록을 위한 power 커맨드 자동 실행
-    showPowerConsumption();
+    calculatePowerConsumption();
     runShell();
 
     return 0;
