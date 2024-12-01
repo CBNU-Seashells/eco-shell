@@ -14,32 +14,32 @@
 
 typedef struct
 {
+    int energy_now;
+    int energy_full;
+    int power_now;
+    char model_name[MAX_BUF];
+    char status[MAX_BUF];
+} POWER_INF;
+
+typedef struct
+{
     double energy_now_wh;
     double energy_now_percent;
     double power_now_w;
     double remaining_hours;
 } POWER_CAL;
 
-typedef struct
-{
-    int energy_now;
-    int energy_full;
-    int power_now;
-    char model_name[MAX_BUF];
-    char status[MAX_BUF];
-    POWER_CAL *power_cal;
-} POWER;
-
 void power(char* []);
 void showPowerConsumption(void);
-void calculatePowerConsumption(POWER*);
+void calculatePowerConsumption(void);
 void showPowerReport(void);
-void reportPower(POWER*);
+void reportPower(void);
 void comparePowerConsumption(void); // 미완
 void powerHelp(void);
 FILE *openFile(const char*);
+void nowTime(char [], int);
 
-/* /sys/class/power_supply/BAT1/...: 컴퓨터의 배터리 정보를 기록하는 파일 */
+/* /sys/class/power_supply/BAT1/...: 컴퓨터의 배터리 정보를 기록하는 파일 - POWER_INF에 저장되는 내용 */
 
 // 문제점 및 해결과제:
 // 1. 모든 리눅스 시스템에 이 파일이 존재하는 지는 확실치 않음.
@@ -51,6 +51,10 @@ const char *model_name_path = "/sys/class/power_supply/BAT1/model_name";
 const char *status_path = "/sys/class/power_supply/BAT1/status";
 const char *power_report_path = ".eco-shell_power_report";
 
+// 배터리 정보 구조체 전역변수
+POWER_INF power_inf;
+POWER_CAL power_cal;
+
 void power(char *power_args[]){
     if (power_args[1] == NULL)
     {
@@ -60,7 +64,9 @@ void power(char *power_args[]){
 
     if (strcmp(power_args[1], "-i") == 0)
     {
+        calculatePowerConsumption();
         showPowerConsumption();
+        reportPower();
     }
     else if (strcmp(power_args[1], "-r") == 0)
     {
@@ -68,7 +74,9 @@ void power(char *power_args[]){
     }
     else if (strcmp(power_args[1], "-c") == 0)
     {
+        calculatePowerConsumption();
         comparePowerConsumption();
+        reportPower();
     }
     else if (strcmp(power_args[1], "-h") == 0)
     {
@@ -80,43 +88,7 @@ void power(char *power_args[]){
     }
 }
 
-void showPowerConsumption(void)
-{
-    POWER_CAL power_cal = {0};
-    POWER power = {0, 0, 0, "", "", &power_cal};
-    static int is_first = 1; // 0: 처음이 아님, 1: 처음임
-
-    calculatePowerConsumption(&power);
-
-    // 쉘이 처음 실행될 때 전력 소모량을 계산하여 기록함. 하지만 결과를 출력하지는 않음
-    // 따라서 power 명령이 처음 실행 되었을 때를 제외하고 결과를 출력해야 함.
-    if (is_first)
-    {
-        is_first = 0;
-
-        return;
-    }
-    else
-    {
-        printf("현재 전력 소비량: %.2fW\n", power.power_cal->power_now_w);
-        printf(
-            "현재 배터리 잔량: %.2fWH(%.2f%%)\n", power.power_cal->energy_now_wh, power.power_cal->energy_now_percent);
-
-        if (power.power_cal->remaining_hours > 0)
-        {
-            printf("남은 배터리 지속 시간: %.2fH\n", power.power_cal->remaining_hours);
-        }
-        else
-        {
-            printf("남은 배터리 지속 시간: 계산 불가\n");
-        }
-
-        printf("배터리 상태: %s\n", power.status);
-        printf("배터리 모델명: %s\n", power.model_name);
-    }
-}
-
-void calculatePowerConsumption(POWER *power)
+void calculatePowerConsumption(void)
 {
     FILE *fp_energy_now = openFile(energy_now_path);
     FILE *fp_energy_full = openFile(energy_full_path);
@@ -127,18 +99,18 @@ void calculatePowerConsumption(POWER *power)
     char buf[MAX_BUF];
 
     if (fgets(buf, sizeof(buf), fp_energy_now) != NULL)
-        power->energy_now = atoi(buf);
+        power_inf.energy_now = atoi(buf);
 
     if (fgets(buf, sizeof(buf), fp_energy_full) != NULL)
-        power->energy_full = atoi(buf);
+        power_inf.energy_full = atoi(buf);
 
     if (fgets(buf, sizeof(buf), fp_power_now) != NULL)
-        power->power_now = atoi(buf);
+        power_inf.power_now = atoi(buf);
 
     if (fgets(buf, sizeof(buf), fp_model_name) != NULL)
     {
-        strncpy(power->model_name, buf, MAX_BUF - 1);
-        power->model_name[MAX_BUF - 1] = '\0';
+        strncpy(power_inf.model_name, buf, MAX_BUF - 1);
+        power_inf.model_name[MAX_BUF - 1] = '\0';
     }
 
     if (fgets(buf, sizeof(buf), fp_status) != NULL)
@@ -146,40 +118,61 @@ void calculatePowerConsumption(POWER *power)
         buf[strcspn(buf, "\n")] = '\0';
         if (strcmp(buf, "Discharging") == 0)
         {
-            strncpy(power->status, "충전 중이 아님", MAX_BUF - 1);
+            strncpy(power_inf.status, "충전 중이 아님", MAX_BUF - 1);
         }
         else if (strcmp(buf, "Charging") == 0)
         {
-            strncpy(power->status, "충전 중", MAX_BUF - 1);
+            strncpy(power_inf.status, "충전 중", MAX_BUF - 1);
         }
         else
         {
-            strncpy(power->status, "충전 상태 확인 불가", MAX_BUF - 1);
+            strncpy(power_inf.status, "충전 상태 확인 불가", MAX_BUF - 1);
         }
     }
 
-    power->power_cal->energy_now_wh = (double)power->energy_now / 1000000;
-    power->power_cal->energy_now_percent = ((double)power->energy_now / power->energy_full) * 100;
-    power->power_cal->power_now_w = (double)power->power_now / 1000000;
-    power->power_cal->remaining_hours =
-        (power->power_cal->power_now_w > 0) ? power->power_cal->energy_now_wh / power->power_cal->power_now_w : -1;
+    power_cal.energy_now_wh = (double)power_inf.energy_now / 1000000;
+    power_cal.energy_now_percent = ((double)power_inf.energy_now / power_inf.energy_full) * 100;
+    power_cal.power_now_w = (double)power_inf.power_now / 1000000;
+    power_cal.remaining_hours =
+        (power_cal.power_now_w > 0) ? power_cal.energy_now_wh / power_cal.power_now_w : -1;
 
     fclose(fp_energy_now);
     fclose(fp_energy_full);
     fclose(fp_power_now);
     fclose(fp_model_name);
     fclose(fp_status);
-
-    reportPower(power);
 }
 
-void reportPower(POWER *power)
+void reportPower(void)
 {
     FILE *fp_report_power = openFile(power_report_path);
+    char now_time[MAX_BUF];
     static int idx = 1;
 
-    fprintf(fp_report_power, "%d %f %f\n", idx++, power->power_cal->power_now_w, power->power_cal->energy_now_wh);
+    nowTime(now_time, sizeof(now_time));
+
+    fprintf(fp_report_power, "%d %f %f %f %s\n", idx++, power_cal.power_now_w, power_cal.energy_now_wh, power_cal.energy_now_percent, now_time);
     fclose(fp_report_power);
+}
+
+void showPowerConsumption(void)
+{
+    
+    printf("현재 전력 소비량: %.2fW\n", power_cal.power_now_w);
+    printf("현재 배터리 잔량: %.2fWH(%.2f%%)\n", power_cal.energy_now_wh, power_cal.energy_now_percent);
+
+    if (power_cal.remaining_hours > 0)
+    {
+        printf("남은 배터리 지속 시간: %.2fH\n", power_cal.remaining_hours);
+    }
+    else
+    {
+        printf("남은 배터리 지속 시간: 계산 불가\n");
+    }
+
+    printf("배터리 상태: %s\n", power_inf.status);
+    printf("배터리 모델명: %s\n", power_inf.model_name);
+   
 }
 
 void showPowerReport(void)
@@ -187,7 +180,8 @@ void showPowerReport(void)
     FILE *fp_report_power = openFile(power_report_path);
     char buf[MAX_BUF];
 
-    printf("%-10s %-10s %-10s\n", "번호", "전력 소모량", "배터리 잔량");
+    printf("%s %s %s\n", "번호", "전력소모량(W)", "배터리잔량(WH) 배터리잔량(%) 날짜 시간");
+    printf("----------------------------------------------------------\n");
     while ((fgets(buf, sizeof(buf), fp_report_power)) != NULL)
     {
         printf("%s", buf);
