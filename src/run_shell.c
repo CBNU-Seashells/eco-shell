@@ -9,8 +9,6 @@
 #define STDIN_BUFFER 1000
 #define HOME_DIRECTORY_BUFFER 30
 
-// struct passwd *pw;
-
 // 현재 작업 디렉터리(절대 경로)
 char *cwd = NULL;
 
@@ -36,8 +34,6 @@ void runShell(void)
 {
     // 명령행에서 입력받은 문자열을 저장할 버퍼
     char input[STDIN_BUFFER];
-
-    // pw = getpwuid(getuid());
 
     // 임시 문자열 저장 버퍼
     char temp[BUFSIZ];

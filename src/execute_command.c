@@ -12,6 +12,8 @@
 #define ARGS_BUFFER 50
 
 void showPowerConsumption(void);
+void showPowerReport(void);
+
 void cleanupFiles(char *[]);
 void cleanupProcess(void);
 void ecoMode(void);
@@ -52,8 +54,21 @@ int executeCommand(char *input)
     // 환경 친화 명령어 실행
     if (strcmp(args[0], "power") == 0)
     {
-        // 전력 소모량 출력 명령 - power
-        showPowerConsumption();
+        if (args[1] == NULL)
+        {
+            // 전력 소모량 출력 명령 - power
+            showPowerConsumption();
+        }
+        else if (strcmp(args[1], "-r") == 0)
+        {
+            // power 명령어 사용 로그(전력 소모량, 배터리 잔량 출력) - power -r
+            showPowerReport();
+        }
+        else
+        {
+            printf("Invalid Option: %s\n", args[1]);
+            return 1;
+        }
 
         return 0;
     }
