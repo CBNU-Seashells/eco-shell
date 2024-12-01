@@ -202,6 +202,7 @@ void cleanupHelp(void)
     printf("  -l: 로그 파일 정리\n");
     printf("  -c: 캐시 파일 정리\n");
     printf("  -a: 임시, 로그, 캐시 파일 모두 정리\n");
+    printf("  -h: 도움말\n");
 }
 
 void cleanupFiles(char *cleanup_args[])
