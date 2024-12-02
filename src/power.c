@@ -257,6 +257,8 @@ void comparePowerConsumption(void)
         printf("차이 없음\n");
     }
 
+    printf("5. 탄소 배출량: 약 %.2lfg\n", ((init.energy_now_wh - power_cal.energy_now_wh)/1000)*424);
+
     fclose(fp_report_power);
 }
 
