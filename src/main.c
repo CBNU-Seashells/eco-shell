@@ -4,6 +4,7 @@
 
 void runShell(void);
 void calculatePowerConsumption(void);
+void reportPower(void);
 
 int main(void)
 {
@@ -14,6 +15,7 @@ int main(void)
 
     // 전력 소모량 초기 기록을 위한 power 커맨드 자동 실행
     calculatePowerConsumption();
+    reportPower();
     runShell();
 
     return 0;

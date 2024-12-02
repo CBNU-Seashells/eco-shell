@@ -27,7 +27,21 @@ typedef struct
     double energy_now_percent;
     double power_now_w;
     double remaining_hours;
+    char time[MAX_BUF];
+    int time_s;
 } POWER_CAL;
+
+typedef struct
+{
+    int number;
+    double energy_now_wh;
+    double energy_now_percent;
+    double power_now_w;
+    char date[50];
+    char time[50];
+    int time_s;
+} POWER_CMP;
+
 
 void power(char* []);
 void showPowerConsumption(void);
@@ -37,7 +51,8 @@ void reportPower(void);
 void comparePowerConsumption(void); // 미완
 void powerHelp(void);
 FILE *openFile(const char*);
-void nowTime(char [], int);
+void nowTime(char [], int*, int);
+int compareTime(int, int);
 
 /* /sys/class/power_supply/BAT1/...: 컴퓨터의 배터리 정보를 기록하는 파일 - POWER_INF에 저장되는 내용 */
 
@@ -146,24 +161,23 @@ void calculatePowerConsumption(void)
 void reportPower(void)
 {
     FILE *fp_report_power = openFile(power_report_path);
-    char now_time[MAX_BUF];
     static int idx = 1;
 
-    nowTime(now_time, sizeof(now_time));
+    nowTime(power_cal.time, &(power_cal.time_s), MAX_BUF);
 
-    fprintf(fp_report_power, "%d %f %f %f %s\n", idx++, power_cal.power_now_w, power_cal.energy_now_wh, power_cal.energy_now_percent, now_time);
+    fprintf(fp_report_power, "%d %lf %lf %lf %s %d\n", idx++, power_cal.power_now_w, power_cal.energy_now_wh, power_cal.energy_now_percent, power_cal.time, power_cal.time_s);
     fclose(fp_report_power);
 }
 
 void showPowerConsumption(void)
 {
     
-    printf("현재 전력 소비량: %.2fW\n", power_cal.power_now_w);
-    printf("현재 배터리 잔량: %.2fWH(%.2f%%)\n", power_cal.energy_now_wh, power_cal.energy_now_percent);
+    printf("현재 전력 소비량: %.2lfW\n", power_cal.power_now_w);
+    printf("현재 배터리 잔량: %.2lfWH(%.2lf%%)\n", power_cal.energy_now_wh, power_cal.energy_now_percent);
 
     if (power_cal.remaining_hours > 0)
     {
-        printf("남은 배터리 지속 시간: %.2fH\n", power_cal.remaining_hours);
+        printf("남은 배터리 지속 시간: %.2lfH\n", power_cal.remaining_hours);
     }
     else
     {
@@ -180,8 +194,8 @@ void showPowerReport(void)
     FILE *fp_report_power = openFile(power_report_path);
     char buf[MAX_BUF];
 
-    printf("%s %s %s\n", "번호", "전력소모량(W)", "배터리잔량(WH) 배터리잔량(%) 날짜 시간");
-    printf("----------------------------------------------------------\n");
+    printf("%s %s %s\n", "번호", "전력소모량(W)", "배터리잔량(WH) 배터리잔량(%) 날짜 시간 시리얼넘버");
+    printf("------------------------------------------------------------------\n");
     while ((fgets(buf, sizeof(buf), fp_report_power)) != NULL)
     {
         printf("%s", buf);
@@ -191,16 +205,59 @@ void showPowerReport(void)
 }
 
 /* comparePowerConsumption(): 전력 사용량 비교를 위한 함수 */
-
-// TODO:
-// 1. 쉘 초기 실행시 전력 상황 기록.(완료)
-// 2. 사용자가 전력 사용량 비교 명령 요청시 파일 값을 읽어 비교.
-//  -> power -c 명령
-// 3. 쉘 실행 시간 동안의 전력 소모 속도, 소모된 양, 배터리 사용된 시간 등 출력
-// 4. 전력 소모량을 바탕으로 쉘 실행 시간 동안의 탄소 배출량 추산.
+// TODO: 전력 소모량을 바탕으로 쉘 실행 시간 동안의 탄소 배출량 추산.
 void comparePowerConsumption(void) 
 {
-    
+    FILE *fp_report_power = openFile(power_report_path);
+
+    char buf[MAX_BUF];
+    char first_line[MAX_BUF];
+    int use_time;
+    POWER_CMP init;
+
+    // 파일의 첫번째 줄을 읽음
+    fseek(fp_report_power, 0, SEEK_SET);
+    if((fgets(buf, sizeof(buf), fp_report_power)) != NULL)
+    {
+        strncpy(first_line, buf, sizeof(first_line) - 1);
+        sscanf(first_line, "%d %lf %lf %lf %s %s %d", &init.number, &init.power_now_w, &init.energy_now_wh, &init.energy_now_percent, init.date, init.time, &init.time_s);
+    }
+    else
+    {
+        fprintf(stderr, "오류. power 기록을 읽을 수 없음.\n");
+    }
+
+    use_time = compareTime(init.time_s, power_cal.time_s);
+
+    // 결과 출력
+    printf("에코쉘 실행 이후...\n");
+    printf("1. 컴퓨터 사용 시간: %d분\n", use_time);
+    printf("2. 배터리 소모량: 약 %.2lfWH(%.2lf%%)\n", init.energy_now_wh - power_cal.energy_now_wh, init.energy_now_percent - power_cal.energy_now_percent);
+    printf("3. 배터리 소모 속도: ");
+    if(use_time == 0)
+    {
+        printf("컴퓨터 사용시간이 매우 짧아 배터리 소모 속도를 계산할 수 없습니다. 나중에 다시 시도하세요.\n");
+    }
+    else
+    {
+        printf("분당 %.2lfWH(%.2lf%%)\n", (init.energy_now_wh - power_cal.energy_now_wh) / use_time, (init.energy_now_percent - power_cal.energy_now_percent) / use_time);
+    }
+
+    printf("4. 순간 전력 소모량: ");
+    if(power_cal.power_now_w > init.power_now_w)
+    {
+        printf("%.2lfW 더 낮음\n", (power_cal.power_now_w - init.power_now_w));
+    }
+    else if(power_cal.power_now_w < init.power_now_w)
+    {
+        printf("%.2lfW 더 높음\n", (init.power_now_w - power_cal.power_now_w));
+    }
+    else
+    {
+        printf("차이 없음\n");
+    }
+
+    fclose(fp_report_power);
 }
 
 void powerHelp(void)
