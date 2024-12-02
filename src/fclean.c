@@ -8,6 +8,13 @@
 
 #define FILEPATH_BUFFER 500
 
+void cleanupTmpFiles(void);
+void cleanupLogFiles(void);
+void cleanupCacheFiles(void);
+void cleanupAllFiles(void);
+void cleanupHelp(void);
+void cleanupFiles(char *[]);
+
 void cleanupTmpFiles()
 {
     const char *temp_dir = "/tmp/";
@@ -66,7 +73,7 @@ void cleanupTmpFiles()
     }
 }
 
-void cleanupLogFiles()
+void cleanupLogFiles(void)
 {
     const char *temp_dir = "/var/log/";
     struct dirent *entry;
@@ -124,7 +131,7 @@ void cleanupLogFiles()
     }
 }
 
-void cleanupCacheFiles()
+void cleanupCacheFiles(void)
 {
     const char *temp_dir = "/var/cache/";
     struct dirent *entry;
@@ -182,7 +189,7 @@ void cleanupCacheFiles()
     }
 }
 
-void cleanupAllFiles()
+void cleanupAllFiles(void)
 {
     cleanupTmpFiles();
     printf("\n");
@@ -205,36 +212,36 @@ void cleanupHelp(void)
     printf("  -h: 도움말\n");
 }
 
-void cleanupFiles(char *cleanup_args[])
+void cleanupFiles(char *fclean_args[])
 {
-    if (cleanup_args[1] == NULL)
+    if (fclean_args[1] == NULL)
     {
         cleanupHelp();
         return;
     }
 
-    if (strcmp(cleanup_args[1], "-t") == 0)
+    if (strcmp(fclean_args[1], "-t") == 0)
     {
         cleanupTmpFiles();
     }
-    else if (strcmp(cleanup_args[1], "-l") == 0)
+    else if (strcmp(fclean_args[1], "-l") == 0)
     {
         cleanupLogFiles();
     }
-    else if (strcmp(cleanup_args[1], "-c") == 0)
+    else if (strcmp(fclean_args[1], "-c") == 0)
     {
         cleanupCacheFiles();
     }
-    else if (strcmp(cleanup_args[1], "-a") == 0)
+    else if (strcmp(fclean_args[1], "-a") == 0)
     {
         cleanupAllFiles();
     }
-    else if (strcmp(cleanup_args[1], "-h") == 0)
+    else if (strcmp(fclean_args[1], "-h") == 0)
     {
         cleanupHelp();
     }
     else
     {
-        fprintf(stderr, "%s: 이런 옵션은 없습니다.\n'fclean -h'를 입력하여 사용법을 확인하세요.\n", cleanup_args[1]);
+        fprintf(stderr, "%s: 이런 옵션은 없습니다.\n'fclean -h'를 입력하여 사용법을 확인하세요.\n", fclean_args[1]);
     }
 }

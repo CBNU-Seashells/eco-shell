@@ -13,7 +13,7 @@
 
 void power(char *[]);
 void cleanupFiles(char *[]);
-void cleanupProcess(void);
+void cleanupProcess(char *[]);
 void ecoMode(void);
 
 // 일반적인 쉘 명령어를 처리할 때 사용된다.
@@ -66,7 +66,7 @@ int executeCommand(char *input)
     else if (strcmp(args[0], "pclean") == 0)
     {
         // 불필요한 프로세스 종료 명령 - pclean
-        cleanupProcess();
+        cleanupProcess(args);
 
         return 0;
     }
