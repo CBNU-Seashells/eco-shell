@@ -48,19 +48,31 @@ int runProcess(char *args[])
     // 부모 프로세스
     else
     {
-        wait(NULL);
+        // 자식 프로세스의 종료 상태 저장
+        int status;
+
+        wait(&status);
+
+        /*
+            자식 프로세스의 종료 코드가 1일 경우 runProcess 함수 -> executeCommand 함수 ->runShell 함수
+            경로로 종료 코드 1을 전달해준다.
+        */
+        if (WEXITSTATUS(status) == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
 
         if (strcmp(args[0], "cd") == 0)
         {
-            // 커맨드라인에 "cd"를 입력할 경우
+            // 명령행에 "cd"를 입력할 경우
             if (args[1] == NULL)
             {
                 if (chdir(home_dir) != 0)
                 {
-                    perror(args[1]);
+                    perror("cd");
                 }
             }
-            // 커맨드라인에 "cd ~"를 입력할 경우
+            // 명령행에 "cd ~"를 입력할 경우
             else if (strcmp(args[1], "~") == 0)
             {
                 if (chdir(home_dir) != 0)
@@ -68,6 +80,7 @@ int runProcess(char *args[])
                     perror("cd");
                 }
             }
+            // 그 외에 명령행에 "cd (절대경로)"를 입력한 경우
             else
             {
                 if (chdir(args[1]) != 0)
