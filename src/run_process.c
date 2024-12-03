@@ -7,8 +7,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define HOME_DIRECTORY_BUFFER 30
-
 // 현재 작업 디렉터리
 extern char *cwd;
 

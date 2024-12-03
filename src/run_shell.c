@@ -6,8 +6,13 @@
 #include <pwd.h>
 #include <unistd.h>
 
+// 명령행 버퍼 크기
 #define STDIN_BUFFER 1000
-#define HOME_DIRECTORY_BUFFER 30
+
+// 터미널에 출력되는 문자에 색상을 입히기 위한 ANSI 이스케이프 코드
+#define COLOR_GREEN "\033[1;32m"
+#define COLOR_BLUE "\033[1;34m"
+#define COLOR_RESET "\033[0m"
 
 // 현재 작업 디렉터리(절대 경로)
 char *cwd = NULL;
@@ -43,8 +48,6 @@ void runShell(void)
 
     home_dir = getenv("HOME");
 
-    // setenv("PATH", , 1);
-
     while (1)
     {
         cwd = getcwd(cwd, BUFSIZ);
@@ -64,7 +67,7 @@ void runShell(void)
             strcat(cwd_tilde, temp);
             cwd_tilde[strlen(cwd_tilde)] = '\0';
 
-            printf("\033[1;32meco-shell\033[0m:\033[1;34m%s\033[0m$ ", cwd_tilde);
+            printf(COLOR_GREEN "eco-shell" COLOR_RESET ":" COLOR_BLUE "%s" COLOR_RESET "$ ", cwd_tilde);
         }
         /*
             cwd에 home_dir이 포함되어 있지 않고 cwd != home_dir일 경우
@@ -72,7 +75,7 @@ void runShell(void)
         */
         else
         {
-            printf("\033[1;32meco-shell\033[0m:\033[1;34m%s\033[0m$ ", cwd);
+            printf(COLOR_GREEN "eco-shell" COLOR_RESET ":" COLOR_BLUE "%s" COLOR_RESET "$ ", cwd);
         }
 
         // 명령행에서 입력을 받을 때 에러 발생 시 eco-shell 종료
