@@ -14,7 +14,6 @@
 void power(char *[]);
 void cleanupFiles(char *[]);
 void cleanupProcess(char *[]);
-void ecoMode(void);
 
 // 일반적인 쉘 명령어를 처리할 때 사용된다.
 int runProcess(char *[]);
@@ -69,12 +68,6 @@ int executeCommand(char *input)
         cleanupProcess(args);
 
         return 0;
-    }
-    else if (strcmp(args[0], "ecomode"))
-    {
-        // 에코모드 - ecomode
-        // 추후 옵션 인자 처리를 위해 주석으로 args를 넣었음
-        ecoMode(/*args*/);
     }
 
     // 일반 쉘 명령어 실행
