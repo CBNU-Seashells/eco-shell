@@ -17,11 +17,12 @@ eco-shell/<br>
 ├── src/<br>
 │   ├── main.c<br>
 │   ├── run_shell.c<br>
-│   ├── command.c<br>
+│   ├── execute_command.c<br>
 │   ├── run_process.c<br>
 │   ├── fclean.c<br>
 │   ├── pclean.c<br>
-│   └── power.c<br>
+│   ├── power.c<br>
+│   └── time.c<br>
 ├── Makefile<br>
 └── README.md<br>
 
@@ -61,13 +62,6 @@ $ exit
             <li>-t: 임시파일 삭제</li>
             <li>-l: 로그파일 삭제</li>
             <li>-c: 캐시 파일 삭제</li>
-            <li>-h: 도움말 표시</li>
-        </ul>
-    <li>power 명령</li>
-        <ul>
-            <li>-i: 현재 전력 소모량, 배터리 잔량, 남은 배터리 사용 시간, 배터리 상태, 배터리 모델명 표시</li>
-            <li>-r: power 명령어 사용 기록 확인</li>
-            <li>-c: 쉘 초기 실행 이후 전력 소모량 비교. 컴퓨터 사용 시간, 배터리 소모량, 배터리 소모 속도, 순간 전력 소모량 비교, 탄소 배출량 표시</li>
             <li>-h: 도움말 표시</li>
         </ul>
     <li>pclean 명령</li>
